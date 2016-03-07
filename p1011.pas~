@@ -1,0 +1,66 @@
+var
+	i,j,k,m,n:longint;
+	max:longint;
+	x,y,h:array[1..250000] of longint;
+	f,map:array[1..500,1..500] of longint;
+procedure swap(var x,y:longint);
+var
+	k:longint;
+begin
+	k:=x;	x:=y; y:=k;
+end;
+procedure qsort(l,r:longint);
+var
+	i,j,k,xx:longint;
+begin
+	i:=l;j:=r;
+	xx:=h[(l+r) div 2];
+	repeat
+		while h[i]>xx do inc(i);
+		while h[j]<xx do dec(j);
+		if i<=j then
+		begin
+			swap(h[i],h[j]);
+			swap(x[i],x[j]);
+			swap(y[i],y[j]);
+			inc(i);dec(j);
+		end;
+	until i>j;
+
+	if i<r then qsort(i,r);
+	if j>l then qsort(l,j);
+end;
+begin
+	readln(n,m);
+	for i:=1 to n do
+		for j:=1 to m do
+		begin
+			x[(i-1)*m+j]:=i;
+			y[(i-1)*m+j]:=j;
+			read(h[(i-1)*m+j]);
+			map[i,j]:=h[(i-1)*m+j];
+		end;
+
+	qsort(1,n*m);
+	fillchar(f,sizeof(f),0);
+	for i:=1 to n*m do
+	begin
+		max:=0;
+		if x[i]>1 then if (max<f[x[i]-1,y[i]]) and (map[x[i]-1,y[i]]>h[i]) then
+			max:=f[x[i]-1,y[i]];
+		if x[i]<n then if (max<f[x[i]+1,y[i]]) and (map[x[i]+1,y[i]]>h[i]) then
+			max:=f[x[i]+1,y[i]];
+		if y[i]>1 then if (max<f[x[i],y[i]-1]) and (map[x[i],y[i]-1]>h[i]) then
+			max:=f[x[i],y[i]-1];
+		if y[i]<m then if (max<f[x[i],y[i]+1]) and (map[x[i],y[i]+1]>h[i]) then
+			max:=f[x[i],y[i]+1];
+		f[x[i],y[i]]:=max+1;
+	end;
+	
+	max:=0;
+	for i:=1 to n do
+		for j:=1 to m do
+			if f[i,j]>max then max:=f[i,j];
+
+	writeln(max);
+end.

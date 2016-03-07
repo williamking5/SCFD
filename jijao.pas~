@@ -1,0 +1,47 @@
+const
+	eps=10E-7
+var
+	i,j,k,m,n:longint;
+	a,x,y:array[1..100000] of real;
+function compare(xx,yy:longint):shortint;
+var
+	k:real;
+begin
+	if a[xx]=a[yy] then
+	begin
+		if (a[xx]=0) or (a[xx]=1.5) or (a[xx]=2.5) or (a[xx]=3.5) then
+			exit(0);
+		k:=x[xx]*y[yy]-x[yy]*y[xx];
+		if k<0-eps then exit(1);
+		if abs(k)<eps then exit(0);
+		if k>eps then exit(2);
+	end
+	else
+	begin
+		if a[xx]>a[yy] then exit(1)
+		else exit(2);
+	end;
+end;
+procedure sort(h,t:longint);
+var
+	i,j,x:longint;
+begin
+	
+end;
+begin
+	readln(n);
+	for i:=1 to n do
+	begin
+		readln(x[i],y[i]);
+		if (x[i]>0) and (y[i]>0) then a[i]:=1;
+		if (x[i]>0) and (y[i]<0) then a[i]:=4;
+		if (x[i]<0) and (y[i]>0) then a[i]:=2;
+		if (x[i]<0) and (y[i]<0) then a[i]:=3;
+		if (x[i]>0) and (y[i]=0) then a[i]:=0;
+		if (x[i]=0) and (y[i]>0) then a[i]:=1.5;
+		if (x[i]<0) and (y[i]=0) then a[i]:=2.5;
+		if (x[i]=0) and (y[i]<0) then a[i]:=3.5;
+	end;
+
+	writeln(compare(1,2));
+end.

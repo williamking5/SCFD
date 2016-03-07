@@ -1,0 +1,19 @@
+const
+	ee=10E-6;
+var
+	i,j,k,m,n:longint;
+	x,y:array[1..4] of real;
+	c1,c2:real;b1,b2:boolean;
+begin
+	for i:=1 to 4 do
+		readln(x[i],y[i]);
+	
+	c1:=(x[2]-x[1])*(y[3]-y[1])-(x[3]-x[1])*(y[2]-y[1]);
+	c2:=(x[2]-x[1])*(y[4]-y[1])-(y[2]-y[1])*(x[4]-x[1]);
+	b1:=false;
+	if c1*c2<0 then b1:=true;
+	if c1*c2=0 then
+	begin
+		
+	end;
+end.

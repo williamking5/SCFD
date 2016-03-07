@@ -1,0 +1,39 @@
+type
+	re=record
+		x:longint;
+		y:longint;
+	end;
+var
+	i,j:longint;
+	a:array[1..100000] of re;
+procedure pai(l,r:longint);
+var
+	i,j,mid1,mid2:longint;
+ 	t:re;
+begin
+ 	i:=l;j:=r;
+ 	mid1:=a[(l+r)shr 1].x;
+ 	mid2:=a[(l+r)shr 1].y;
+ 	repeat
+  		while (a[i].x<mid1)or((a[i].x=mid1)and(a[i].y<mid2)) do inc(i);
+  		while (a[j].x>mid1)or((a[j].x=mid1)and(a[j].y>mid2)) do dec(j);
+  		if i<=j then
+   		begin
+    		t:=a[i];
+    		a[i]:=a[j];
+    		a[j]:=t;
+    		inc(i);
+    		dec(j);
+   		end;
+ 	until i>j;
+ 	if i<r then pai(i,r);
+ 	if l<j then pai(l,j);
+end;
+begin
+	readln(n);
+	for i:=1 to n do
+		readln(a[i].x,a[i].y);
+	pai(1,n);
+	for i:=1 to n do
+		writeln(a[i].x,' ',a[i].y);
+end.

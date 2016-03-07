@@ -1,0 +1,74 @@
+var
+	i,j,k,m,n:longint;
+	x,y:longint;
+	v,fa,a,b,w:array[1..200000] of longint;
+function getfa(x:longint):longint;
+var
+	i,j,k:longint;
+begin
+	i:=x;
+	while fa[i]<>0 do
+		i:=fa[i];
+	j:=i;
+	i:=x;
+	while fa[i]<>0 do
+	begin
+		k:=fa[i];
+		fa[i]:=j;
+		i:=k;
+	end;
+	exit(j);
+end;
+procedure swap(var x,y:longint);
+var
+	z:longint;
+begin
+	z:=x;x:=y;y:=z;
+end;
+procedure sort(h,t:longint);
+var
+	i,j,x:longint;
+begin
+	x:=w[(h+t) div 2];
+	i:=h;j:=t;
+	repeat
+		while w[i]<x do inc(i);
+		while w[j]>x do dec(j);
+		if i<=j then begin
+			swap(w[i],w[j]);
+			swap(a[i],a[j]);
+			swap(b[i],b[j]);
+			inc(i);dec(j);
+		end;
+	until i>j;
+	if j>h then sort(h,j);
+	if i<t then sort(i,t);
+end;
+procedure union(x,y:longint);
+var
+	i,j:longint;
+begin
+	i:=getfa(x);
+	j:=getfa(y);
+	fa[i]:=j;
+end;
+begin
+	readln(n,m);
+	for i:=1 to m do
+		readln(w[i],a[i],b[i]);
+	sort(1,m);
+	fillchar(fa,sizeof(fa),0);
+	fillchar(v,sizeof(v),0);
+	
+	{for i:=1 to m do
+	begin
+		x:=getfa(a[i]);
+		y:=getfa(b[i]);
+		if x<>y then begin
+			v[i]:=1;
+			union(a[i],b[i]);
+		end;
+	end;
+	for i:=1 to m do
+		if v[i]=1 then writeln(a[i],' ',b[i],' ',w[i]);}
+end.

@@ -1,0 +1,39 @@
+#!/bin/bash
+
+tt=1
+while ((tt=1)) 
+do
+	echo -e "<<\c"
+	read order
+	
+	if [ $order = "load" ]; then
+		echo "请输入文件名(无后缀名)："
+		read filename
+		echo $filename > "file.ran"
+	fi
+	if [ $order = "fpc" ]; then
+		if [ -f "file.ran" ]; then
+			read filename < "file.ran"
+		else
+			echo "请载入要操作文件名（无后缀名）"
+			read filename
+			echo $filename > "file.ran"
+		fi
+		fpc $filename
+	fi
+	if [ $order = "ran" ]; then
+		if [ -f "file.ran" ]; then
+			read filename < "file.ran"
+		else
+			echo "请载入要操作文件名（无后缀名）"
+			read filename
+			echo $filename > "file.ran"
+		fi
+		echo "程序正在运行"
+		./$filename
+	fi
+
+	if [ $order = "exit" ];  then
+		exit
+	fi
+done

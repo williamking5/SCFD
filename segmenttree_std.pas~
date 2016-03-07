@@ -1,0 +1,174 @@
+var
+	i,j,k,m,n,len:longint;
+	x,y,z:longint;
+	satel,sater,l,r,fa:array[1..100000] of longint;
+	a,s,min,lazy:array[1..100000] of longint;
+procedure make(root,ll,rr:longint);
+var
+	i,j:longint;
+begin
+	satel[root]:=ll;
+	sater[root]:=rr;
+	if ll=rr then
+	begin
+		l[root]:=ll;
+		r[root]:=rr;
+	end
+	else
+	begin
+		inc(len);
+		fa[len]:=root;
+		l[root]:=len;
+		make(len,ll,(ll+rr)div 2);
+		inc(len);
+		fa[len]:=root;
+		r[root]:=len;
+		make(len,(ll+rr)div 2+1,rr);
+	end;
+end;
+procedure updatemin(p:longint);
+var
+	i:longint;
+begin
+	i:=fa[p];
+	while i<>0 do
+	begin
+		if lazy[l[i]]+min[l[i]]<lazy[r[i]]+min[r[i]] then
+			min[i]:=lazy[l[i]]+min[l[i]]
+		else min[i]:=lazy[r[i]]+min[r[i]];
+		i:=fa[i];
+	end;
+end;
+procedure update(p,x:longint);
+var
+	i,j:longint;
+begin
+	i:=p;
+	while fa[i]<>0 do
+	begin
+		s[fa[i]]:=s[fa[i]]+(sater[p]-satel[p]+1)*x;
+		i:=fa[i];
+	end;
+end;
+procedure downdate(p:longint);
+var
+	i:longint;
+begin
+	if (lazy[p]<>0) and (satel[p]<>sater[p]) then
+	begin
+		lazy[l[p]]:=lazy[l[p]]+lazy[p];
+		lazy[r[p]]:=lazy[r[p]]+lazy[p];
+		s[p]:=lazy[p]*(sater[p]-satel[p]+1)+s[p];
+		min[p]:=min[p]+lazy[p];
+		lazy[p]:=0;
+	end;
+end;
+procedure labe(root,ll,rr,x:longint);
+var
+	i,j:longint;
+begin
+	if (ll=satel[root]) and (rr=sater[root]) then
+	begin
+		lazy[root]:=lazy[root]+x;
+		update(root,x);
+		updatemin(root);
+	end
+	else
+	begin
+		if lazy[root]<>0 then
+			downdate(root);
+		if rr<=(satel[root]+sater[root]) div 2 then
+		begin
+			labe(l[root],ll,rr,x);exit;
+		end;
+		if ll>(satel[root]+sater[root]) div 2 then
+		begin
+			labe(r[root],ll,rr,x);exit;
+		end;
+
+		labe(l[root],ll,(satel[root]+sater[root])div 2,x);
+		labe(r[root],(satel[root]+sater[root])div 2+1,rr,x);
+	end;
+end;
+function sigma(root,ll,rr:longint):longint;
+var
+	i,j:longint;
+begin
+	if (satel[root]=ll) and (rr=sater[root]) then
+		exit(s[root]+lazy[root]*(sater[root]-satel[root]+1))
+	else
+	begin
+		if lazy[root]<>0 then downdate(root);
+
+		if rr<=(satel[root]+sater[root]) div 2 then
+			exit(sigma(l[root],ll,rr));
+		if ll>(satel[root]+sater[root])div 2 then
+			exit(sigma(r[root],ll,rr));
+		exit(sigma(l[root],ll,(satel[root]+sater[root]) div 2)+sigma(r[root],(satel[root]+sater[root]) div 2+1,rr));
+	end;
+end;
+function getmin(root,ll,rr:longint):longint;
+var
+	i,j:longint;
+begin
+	if (satel[root]=ll) and (sater[root]=rr) then
+		exit(min[root]+lazy[root])
+	else
+	begin
+		if lazy[root]<>0 then downdate(root);
+
+		if rr<=(satel[root]+sater[root]) div 2 then
+			exit(getmin(l[root],ll,rr));
+		if ll>(satel[root]+sater[root]) div 2 then
+			exit(getmin(r[root],ll,rr));
+		
+		i:=getmin(l[root],ll,(satel[root]+sater[root]) div 2);
+		j:=getmin(r[root],(satel[root]+sater[root]) div 2+1,rr);
+		if i<j then exit(i)
+		else exit(j);
+	end;
+end;
+begin
+{	assign(input,'shiyan.in');
+	reset(input);
+	assign(output,'shiyan.out');
+	rewrite(output);}
+
+	readln(n);
+	fillchar(fa,sizeof(fa),0);
+	fillchar(s,sizeof(s),0);
+	fillchar(a,sizeof(a),0);
+	for i:=1 to n do
+		read(a[i]);
+	
+	len:=1;
+	make(1,1,n);
+	for i:=1 to len do
+	begin
+		if satel[i]=sater[i]  then
+		begin
+			min[i]:=a[satel[i]];
+			s[i]:=min[i];
+			update(i,s[i]);
+			updatemin(i);
+		end;
+	end;
+
+{	for i:=1 to n do
+	begin
+		readln(x,y,z,k);
+		if x=0 then
+			writeln(getmin(1,y,z));
+		if x=2 then
+			writeln(sigma(1,y,z));
+		if x=1 then
+			labe(1,y,z,k);
+	end;}
+	labe(1,2,5,3);
+	labe(1,5,9,2);
+	labe(1,2,9,1);
+
+	writeln(getmin(1,2,9));
+	close(input);
+	close(output)
+end.

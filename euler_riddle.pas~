@@ -1,0 +1,30 @@
+var
+	i,j,k,m,n:longint;
+	a:array[1..10000000] of 0..1;
+	phi,prime:array[1..10000000] of longint;
+begin
+	readln(n);
+
+	m:=0;fillchar(a,sizeof(a),0);
+	for i:=2 to n do
+	begin
+		if a[i]=0 then
+		begin
+			inc(m);
+			prime[m]:=i;
+			phi[i]:=i-1;
+		end;
+		for j:=1 to m do
+		begin
+			if prime[j]*i>n then break;
+			a[i*prime[j]]:=1;
+			if i mod prime[j]=0 then
+			begin
+				phi[i*prime[j]]:=phi[i]*prime[j];break;
+			end
+			else phi[i*prime[j]]:+phi[i]*(prime[j]-1);
+		end;
+	end;
+	for i:=1 to n do
+		write(phi[i],' ');writeln;
+end.
